@@ -48,7 +48,7 @@ class WeatherComParser:
             'div.CurrentConditions--precipValue--3nxCj span')
 
         if self.precip_element:
-            self.precip_text = self.precip_text.text.strip()
+            self.precip_text = self.precip_element.text.strip()
 
         self.later_element_sibling = soup.select_one(
             'div.TodayWeatherCard--TableWrapper--2kEPM ul.WeatherTable--wide--3dFXu li.Column--active--3vpgg')
