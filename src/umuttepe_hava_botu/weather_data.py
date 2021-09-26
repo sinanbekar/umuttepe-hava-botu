@@ -52,8 +52,12 @@ class WeatherComParser:
 
         self.later_element_sibling = soup.select_one(
             'div.TodayWeatherCard--TableWrapper--2kEPM ul.WeatherTable--wide--3dFXu li.Column--active--3vpgg')
-        self.later_element = self.later_element_sibling.find_next_sibling(
-            'li')
+
+        self.later_element = None
+
+        if self.later_element_sibling:
+            self.later_element = self.later_element_sibling.find_next_sibling(
+                'li')
         if self.later_element is None:
             pass
             # TODO Hour by hour
