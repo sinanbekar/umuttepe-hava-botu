@@ -16,3 +16,4 @@ result_persistent = False
 task_serializer = 'json'
 result_serializer = 'json'
 accept_content = ['json']
+worker_max_memory_per_child = 20000

@@ -52,7 +52,7 @@ def run():
 
     # Run Celery
     app.worker_main(argv=['-A', APP_NAME, 'worker', '-B',
-                          '-s',  get_cache_dir() + '/celerybeat-schedule',  '--loglevel=info'])
+                          '-s',  get_cache_dir() + '/celerybeat-schedule', '--concurrency=5',  '--loglevel=info'])
 
 
 if __name__ == '__main__':
