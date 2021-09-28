@@ -49,7 +49,7 @@ class Twitter:
 
     def delete_expired_tweets(self):
         tweets = self.api.user_timeline(
-            screen_name=self.api.auth.get_username())
+            screen_name=self.api.auth.get_username(), count=50)
         for tweet in tweets:
            # TODO: better approach
             if "Umuttepe'de hava şu an" in tweet.text and \
