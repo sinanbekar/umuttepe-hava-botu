@@ -51,7 +51,7 @@ umuttepe_hava_botu run
 
 ## Contributing
 
-For now, feel free for sharing any idea.
+For now, feel free to sharing any idea.
 
 
 

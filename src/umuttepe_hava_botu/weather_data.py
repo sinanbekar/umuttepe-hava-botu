@@ -11,6 +11,7 @@ class WeatherComTurkishTranslation:
     SUNNY: Final[str] = "Güneşli"
     MOSTLY_SUNNY: Final[str] = "Çoğunlukla Güneşli"
     CLEAR_NIGHT: Final[str] = "Açık"
+    SCATTERED_SHOWERS: Final[str] = "Yağmurlu"  # TODO
 
     @staticmethod
     def get_keys():
@@ -81,7 +82,7 @@ class WeatherComParser:
         if self.precip_text:
             text_all = text_all + f" {self.precip_text} bulunuyor."
 
-        if self.later_element:
+        if self.later_element and self.later_phrase_text:
             text_all = text_all + \
                 f" {self.later_label} hava {self.later_phrase_text.lower()}, tahmini sıcaklık {self.later_temp}°C."
 
