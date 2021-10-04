@@ -37,13 +37,21 @@ class Twitter:
                 publish_tweet = False
 
         if publish_tweet:
-            photos = LiveStreamPhotoGenerator().get_photos()
+            photos = []
             weather_text = WeatherComParser().get_weather_text()
+            try:
+                photos = LiveStreamPhotoGenerator().get_photos()
+            except:
+                # Live Camera Feed Offline
+                # TODO: better approach
+                pass
+
             media_ids = []
 
-            for filename in photos:
-                res = self.api.media_upload(filename)
-                media_ids.append(res.media_id)
+            if photos:
+                for filename in photos:
+                    res = self.api.media_upload(filename)
+                    media_ids.append(res.media_id)
 
             self.api.update_status(status=weather_text, media_ids=media_ids)
 
