@@ -13,7 +13,7 @@ Clone Git repo
 git clone https://github.com/sinanbekar/umuttepe-hava-botu
 ```
 
-Rename .env.example to .env and edit Twitter Developer API keys.
+**Rename .env.example to .env and edit Twitter Developer API keys.**
 
 
 Install the dependencies start the bot.
@@ -38,21 +38,13 @@ umuttepe_hava_botu run
 
  ## TODO
  - Automatically change profile photo as weather related
- - Calculate live camera periodic turn timing and select unique angle with sampling
- - Dockerizing
  
  ## Backlog
- - Machine learning based live camera weather condition detection
- - Image processing for anonymizing (blurring pedestrians and license plates)
- Needed GPU powered cloud like Google Firebase (free trial) or Google Colab (totally free) for these 2 items so also needed implementation.
- - Real weather API (highest accuracy and free possible ☺)
- - More test coverage
- - Powerful logging
+ - Place various sensors to different locations near to Umuttepe and get weather conditions as highest accuracy
 
 ## Contributing
 
 For now, feel free to sharing any idea.
-
 
 
 ## License
