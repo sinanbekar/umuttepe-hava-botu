@@ -16,7 +16,9 @@ git clone https://github.com/sinanbekar/umuttepe-hava-botu
 **Rename .env.example to .env and edit Twitter Developer API keys.**
 
 
-Install the dependencies start the bot.
+### Local
+
+Install the dependencies
 
 ```sh
 pip install -r requirements.txt
@@ -28,13 +30,27 @@ pip install -r requirements-dev.txt
 pytest
 ```
 
-
  ## Run
  Run umuttepe-hava-botu
  ```sh
 umuttepe_hava_botu run
 ```
 
+
+### Docker
+
+For now, should only be used for development.
+
+```sh
+docker-compose run start
+```
+
+For testing
+```sh
+docker-compose run test
+```
+
+For production, additional changes needed in Docker files.
 
  ## TODO
  - Automatically change profile photo as weather related
