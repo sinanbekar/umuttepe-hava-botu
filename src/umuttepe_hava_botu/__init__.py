@@ -1,11 +1,8 @@
-from celery.bin.celery import APP
 from dotenv import load_dotenv
 from celery import Celery
 from . import celeryconfig
 from .helpers import get_cache_dir
-
 from .twitter import Twitter
-import sys
 
 APP_NAME = 'umuttepe_hava_botu'
 
@@ -13,7 +10,6 @@ app = Celery(APP_NAME)
 app.config_from_object(celeryconfig)
 
 twitter = Twitter()
-
 
 @app.on_after_configure.connect
 def setup_periodic_tasks(sender, **kwargs) -> None:
@@ -30,7 +26,6 @@ def setup_periodic_tasks(sender, **kwargs) -> None:
         delete_expired_tweets.s(), name="delete expired tweets"
     )
 
-
 @app.task
 def publish_weather_tweet() -> None:
     twitter.publish_weather_tweet()
@@ -39,12 +34,6 @@ def publish_weather_tweet() -> None:
 @app.task
 def delete_expired_tweets() -> None:
     twitter.delete_expired_tweets()
-
-
-def cli():
-    if len(sys.argv) > 1 and sys.argv[1] == 'run':
-        run()
-
 
 def run():
     load_dotenv()
