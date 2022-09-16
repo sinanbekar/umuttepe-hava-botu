@@ -15,6 +15,13 @@ provider:
     TWITTER_CONSUMER_SECRET: ${env:TWITTER_CONSUMER_SECRET}
     TWITTER_ACCESS_TOKEN: ${env:TWITTER_ACCESS_TOKEN}
     TWITTER_ACCESS_TOKEN_SECRET: ${env:TWITTER_ACCESS_TOKEN_SECRET}
+
+package:
+  patterns:
+    - '!./**'
+    - src/**
+    - publishTweet/**  # function name
+    - deleteAllTweets/**  # function name
  
 plugins:
   - serverless-azure-functions
