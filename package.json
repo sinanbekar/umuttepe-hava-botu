@@ -1,0 +1,10 @@
+{
+  "name": "serverless-umuttepe-hava-botu",
+  "version": "1.0.0",
+  "description": "",
+  "author": "",
+  "devDependencies": {
+    "serverless-python-requirements": "^5.4.0",
+    "serverless-azure-functions": "^2.1.3"
+  }
+}
