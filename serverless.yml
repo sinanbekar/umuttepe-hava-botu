@@ -18,15 +18,15 @@ provider:
 
 package:
   patterns:
-    - '!./**'
+    - "!./**"
     - src/**
-    - publishTweet/**  # function name
-    - deleteAllTweets/**  # function name
- 
+    - publishTweet/** # function name
+    - deleteAllTweets/** # function name
+
 plugins:
   - serverless-azure-functions
   - serverless-python-requirements
- 
+
 functions:
   publishTweet:
     handler: src/handlers/publish_tweet.main
