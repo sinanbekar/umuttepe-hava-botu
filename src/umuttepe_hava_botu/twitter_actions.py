@@ -1,5 +1,6 @@
 from __future__ import annotations
 import logging
+import os
 from typing import Any
 import tweepy  # type: ignore
 import time
@@ -36,6 +37,7 @@ class TwitterActions:
                 for filename in frames:
                     res = self.api.media_upload(filename)
                     media_ids.append(res.media_id)
+                    os.unlink(filename)
         except Exception:
             logging.exception(
                 f"An error occurred while uploading media to the Twitter."
@@ -52,9 +54,7 @@ class TwitterActions:
 
     def publish_weather_tweet(self) -> None:
         publish_tweet = True
-        tweets = self.api.user_timeline(
-            screen_name=self.api.auth.get_username(), count=5
-        )
+        tweets = self.api.user_timeline(count=5)
 
         for tweet in tweets:
             if (

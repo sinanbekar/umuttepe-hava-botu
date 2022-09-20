@@ -1,5 +1,4 @@
 from __future__ import annotations
-import io
 import os
 from pytest_mock import MockerFixture  # type: ignore
 import tweepy  # type: ignore
@@ -35,11 +34,10 @@ def test_publish_tweet_success(mocker: MockerFixture) -> None:
     type(mock_twitter_api.media_upload.return_value).media_id = mocker.PropertyMock(
         side_effect=media_ids
     )
+    mocker.patch("os.unlink")
 
     twitter = TwitterActions(mock_twitter_api)
-    twitter.publish_tweet(
-        status_text, [io.BytesIO("frame1".encode()), io.BytesIO("frame2".encode())]
-    )
+    twitter.publish_tweet(status_text, ["/tmp/frame123456", "/tmp/frame234567"])
 
     mock_twitter_api.update_status.assert_called_once_with(
         status=status_text, media_ids=media_ids
@@ -57,11 +55,10 @@ def test_publish_tweet_failure(mocker: MockerFixture) -> None:
     type(mock_twitter_api.media_upload.return_value).media_id = mocker.PropertyMock(
         side_effect=media_ids
     )
+    mocker.patch("os.unlink")
 
     twitter = TwitterActions(mock_twitter_api)
-    twitter.publish_tweet(
-        status_text, [io.BytesIO("frame1".encode()), io.BytesIO("frame2".encode())]
-    )
+    twitter.publish_tweet(status_text, ["/tmp/frame123456", "/tmp/frame234567"])
 
     mock_twitter_api.update_status.assert_called_once_with(
         status=status_text, media_ids=[]

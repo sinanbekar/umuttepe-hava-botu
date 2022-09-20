@@ -49,5 +49,5 @@ def test_generate_frames(mocker: MockerFixture) -> None:
     live_stream = LiveStreamFrameGenerator()
     frames = live_stream.generate_frames()
 
-    assert [frame.read() for frame in frames] == mock_frames_as_bytes
+    assert [open(frame, "rb").read() for frame in frames] == mock_frames_as_bytes
     assert mock_get_segment_first_frame_as_bytes.call_count == 2

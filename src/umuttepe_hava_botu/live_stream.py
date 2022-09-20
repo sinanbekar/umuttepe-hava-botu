@@ -1,9 +1,9 @@
 from __future__ import annotations
-import io
 from typing import Optional
 import m3u8  # type: ignore
 from m3u8 import Segment, M3U8
 import cv2  # type: ignore
+import tempfile
 
 
 class LiveStreamFrameGenerator:
@@ -46,15 +46,17 @@ class LiveStreamFrameGenerator:
     def get_segment_first_frame(self, segment: Segment) -> bytes:
         return self._get_first_frame(segment.absolute_uri)
 
-    def generate_frames(self) -> list[io.BytesIO]:
-        file_like_frames = []
+    def generate_frames(self) -> list[str]:
+        files = []
 
         for segment in self._get_first_and_last_segment():
             frame_bytes = self.get_segment_first_frame(segment)
-            file_like_frames.append(io.BytesIO(frame_bytes))
+            file = tempfile.NamedTemporaryFile(delete=False)
+            file.write(frame_bytes)
+            files.append(file.name)
 
-        return file_like_frames
+        return files
 
 
-def get_frames() -> list[io.BytesIO]:
+def get_frames() -> list[str]:
     return LiveStreamFrameGenerator().generate_frames()
