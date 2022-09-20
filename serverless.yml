@@ -1,0 +1,47 @@
+# serverless.yml
+service: umuttepe-hava-botu
+
+frameworkVersion: "3"
+configValidationMode: off
+useDotenv: true
+
+provider:
+  name: azure
+  location: UK South
+  runtime: python3.8
+  stage: ${opt:stage, 'dev'}
+  environment:
+    TWITTER_CONSUMER_KEY: ${env:TWITTER_CONSUMER_KEY}
+    TWITTER_CONSUMER_SECRET: ${env:TWITTER_CONSUMER_SECRET}
+    TWITTER_ACCESS_TOKEN: ${env:TWITTER_ACCESS_TOKEN}
+    TWITTER_ACCESS_TOKEN_SECRET: ${env:TWITTER_ACCESS_TOKEN_SECRET}
+
+package:
+  patterns:
+    - "!./**"
+    - src/**
+    - publishTweet/** # function name
+    - deleteAllTweets/** # function name
+
+plugins:
+  - serverless-azure-functions
+  - serverless-python-requirements
+
+functions:
+  publishTweet:
+    handler: src/handlers/publish_tweet.main
+    events:
+      - timer:
+          do: notRemoveHere # BUG: do not remove, there is a bug in parsing (¯\_(ツ)_/¯)
+          # https://github.com/serverless/serverless-azure-functions/issues/566
+        name: timer
+        schedule: 0 */30 * * * * # every 30 min
+
+  deleteAllTweets:
+    handler: src/handlers/delete_all_tweets.main
+    events:
+      - timer:
+          do: notRemoveHere # BUG: do not remove, there is a bug in parsing (¯\_(ツ)_/¯)
+          # https://github.com/serverless/serverless-azure-functions/issues/566
+        name: timer
+        schedule: 0 21 * * * # every day at 12 AM as Türkiye timezone

@@ -1,1 +1,0 @@
-worker: umuttepe_hava_botu run

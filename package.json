@@ -1,0 +1,15 @@
+{
+  "name": "sls-umuttepe-hava-botu",
+  "version": "1.0.0",
+  "description": "Serverless Twitter bot that tweets about Umuttepe weather conditions.",
+  "author": "Sinan Bekar <sinanbekar.work@gmail.com> (https://sinan.engineer/)",
+  "scripts": {
+    "start": "sls offline",
+    "deploy": "sls deploy",
+    "undeploy": "sls remove"
+  },
+  "devDependencies": {
+    "serverless-python-requirements": "^5.4.0",
+    "serverless-azure-functions": "^2.1.3"
+  }
+}

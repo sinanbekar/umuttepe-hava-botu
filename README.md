@@ -1,92 +1,79 @@
 # Umuttepe Hava Botu
-Gets Umuttepe weather conditions and kocaeliyiseyret.com live camera frames, publishes on Twitter as a tweet. Currently hosting on Heroku Free Tier.
 
-##### In prod. Twitter account:  [@umuttepedehava](https://twitter.com/umuttepedehava)
+Publishes the weather conditions of Umuttepe and the live camera frames from kocaeliyiseyret.com on Twitter.
+
+Uses Serverless Framework and deployed to Azure Function App.
+
+
+**In prod. Twitter account: [@umuttepedehava](https://twitter.com/umuttepedehava)**
+
 ---
+
 ### Umuttepe
-Kocaeli University's central campus is located in Umuttepe. Umuttepe is one of the places that have unstable weather conditions compared to Izmit Centre because of its 1276 feet (389 meters) altitude. 
+
+Kocaeli University's central campus is located in Umuttepe. Umuttepe is one of the places that have unstable weather conditions compared to Izmit Centre because of its 1276 feet (389 meters) altitude.
 
 ### Used Technologies & Libraries
-**OpenCV** (for capturing live stream frames)
-**Celery** (for task queues)
-**BeautifulSoup4** (for crawling weather data)
-**Tweepy** (easy-to-use library for accessing the Twitter API)
 
+- Serverless Framework
+- OpenCV
+- m3u8
+- tweepy
 
-### How the app works ?
+### How the app works?
 
-Tweets include 2 jpeg frame from kocaeliyiseyret.com live camera data (m3u8) by OpenCV with random sampling (different camera angles) and the tweets also includes weather.com data that crawled with BeautifulSoup4. Celery tasks run periodically for tweeting and deleting old tweets. 
+In v1, the app was refactored with Serverless Framework.
+`OpenCV` helps to convert m3u8 stream segments to frames.
+The tweet contains a weather summary from [umuttepe-hava.vercel.app/api/weather](https://umuttepe-hava.vercel.app/api/weather) and two frames from the live camera data from kodaeliseyret.com. Tweets are published using `tweepy`.
 
+## Installation
 
+umuttepe-hava-botu requires [Python](https://www.python.org) 3.8+ with dependencies to run. Also needed a Twitter Developer account.
 
-## Requirements & Installation
+Clone git repo
 
-umuttepe-hava-botu requires [Python](https://www.python.org) 3.6+ with dependencies to run. Also needed Twitter Developer account.
-Uses Celery based task queues. 
-
-Clone Git repo
 ```sh
 git clone https://github.com/sinanbekar/umuttepe-hava-botu
+cd umuttepe-hava-botu
 ```
 
-**Rename .env.example to .env and edit Twitter Developer API keys.**
-
-
-# Local
+Rename .env.example to .env and edit Twitter Developer API keys.
 
 Install the dependencies
 
 ```sh
-pip install -r requirements.txt
+yarn install
+poetry install
 ```
 
-For testing, install requirements-dev.txt and run command pytest
-```sh
-pip install -r requirements-dev.txt
-pytest
-```
-
- ## Run
- Run umuttepe-hava-botu
- ```sh
-umuttepe_hava_botu run
-```
-
-
-# Docker
-
-For now, should only be used for development.
-
-```sh
-docker-compose run start
-```
 
 For testing
+
 ```sh
-docker-compose run test
+poetry run test
 ```
 
-For production, additional changes are needed in Docker files.
+## Deployment
 
- ## TODO
- - Automatically change profile photo as weather-related
- 
- ## Backlog
- - Place various sensors to different locations near Umuttepe and get weather conditions as highest accuracy
+To deploy to Azure, see: https://www.serverless.com/framework/docs/providers/azure/guide/quick-start
+https://www.serverless.com/framework/docs/providers/azure/guide/credentials
+
+```sh
+yarn deploy # dev stage
+yarn deploy --stage production # production
+```
 
 ## Disclaimer
 
 kocaeliyiseyret.com's contents are copyrighted by Kocaeli Metropolitan Municipality.
 weather.com crawled data are also used in this project.
 
-Use as only for **educational purposes**. 
+Use as only for **educational purposes**.
 Use at **your own risk**.
-
 
 ## Contributing
 
 Please feel free to share any ideas.
-
 
 ## License
 
