@@ -1,8 +1,11 @@
 # Umuttepe Hava Botu
 
-Gets Umuttepe weather conditions and kocaeliyiseyret.com live camera frames, publishes on Twitter as a tweet.
+Publishes the weather conditions of Umuttepe and the live camera frames from kocaeliyiseyret.com on Twitter.
 
-##### In prod. Twitter account: [@umuttepedehava](https://twitter.com/umuttepedehava)
+Uses Serverless Framework and deployed to Azure Function App.
+
+
+**In prod. Twitter account: [@umuttepedehava](https://twitter.com/umuttepedehava)**
 
 ---
 
@@ -12,39 +15,37 @@ Kocaeli University's central campus is located in Umuttepe. Umuttepe is one of t
 
 ### Used Technologies & Libraries
 
-- **OpenCV** (for capturing live stream frames)
-- **BeautifulSoup4** (for crawling weather data)
-- **Tweepy** (easy-to-use library for accessing the Twitter API)
+- Serverless Framework
+- OpenCV
+- m3u8
+- tweepy
 
-### How the app works ?
+### How the app works?
 
-Tweets include 2 jpeg frame from kocaeliyiseyret.com live camera data (m3u8) by OpenCV with random sampling (different camera angles) and the tweets also includes weather.com data that crawled with BeautifulSoup4.
+In v1, the app was refactored with Serverless Framework.
+`OpenCV` helps to convert m3u8 stream segments to frames.
+The tweet contains a weather summary from [umuttepe-hava.vercel.app/api/weather](https://umuttepe-hava.vercel.app/api/weather) and two frames from the live camera data from kodaeliseyret.com. Tweets are published using `tweepy`.
 
-## Requirements & Installation
+## Installation
 
-umuttepe-hava-botu requires [Python](https://www.python.org) 3.8+ with dependencies to run. Also needed Twitter Developer account.
+umuttepe-hava-botu requires [Python](https://www.python.org) 3.8+ with dependencies to run. Also needed a Twitter Developer account.
 
-Clone Git repo
+Clone git repo
 
 ```sh
 git clone https://github.com/sinanbekar/umuttepe-hava-botu
+cd umuttepe-hava-botu
 ```
 
-**Rename .env.example to .env and edit Twitter Developer API keys.**
-
-# Local Development
+Rename .env.example to .env and edit Twitter Developer API keys.
 
 Install the dependencies
 
 ```sh
+yarn install
 poetry install
 ```
 
-and start
-
-```sh
-poetry run start
-```
 
 For testing
 
@@ -52,13 +53,15 @@ For testing
 poetry run test
 ```
 
-## TODO
+## Deployment
 
-- Automatically change profile photo as weather-related
+To deploy to Azure, see: https://www.serverless.com/framework/docs/providers/azure/guide/quick-start
+https://www.serverless.com/framework/docs/providers/azure/guide/credentials
 
-## Backlog
-
-- Place various sensors to different locations near Umuttepe and get weather conditions as highest accuracy
+```sh
+yarn deploy # dev stage
+yarn deploy --stage production # production
+```
 
 ## Disclaimer
 
