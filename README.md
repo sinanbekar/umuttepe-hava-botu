@@ -24,7 +24,7 @@ Kocaeli University's central campus is located in Umuttepe. Umuttepe is one of t
 
 In v1, the app was refactored with Serverless Framework.
 `OpenCV` helps to convert m3u8 stream segments to frames.
-The tweet contains a weather summary from [umuttepe-hava.vercel.app/api/weather](https://umuttepe-hava.vercel.app/api/weather) and two frames from the live camera data from kodaeliseyret.com. Tweets are published using `tweepy`.
+The tweet contains a weather summary from [umuttepe-hava.vercel.app/api/weather](https://umuttepe-hava.vercel.app/api/weather) and two frames from the live camera data from kocaeliyiseyret.com. Tweets are published using `tweepy`.
 
 ## Installation
 
