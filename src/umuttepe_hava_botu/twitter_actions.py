@@ -75,11 +75,9 @@ class TwitterActions:
             self.publish_tweet(weather_data, frames)
 
     def delete_expired_tweets(self) -> None:
-        tweets = self.api.user_timeline(
-            screen_name=self.api.auth.get_username(), count=50
-        )
+        tweets = self.api.user_timeline(count=100)
         for tweet in tweets:
             if self.WEATHER_STARTING_PHRASE in tweet.text and self.is_tweet_expired(
-                tweet, 24 * 3600
-            ):  # 24 hours
+                tweet, 24 * 3600  # 24 hours
+            ):
                 self.api.destroy_status(tweet.id)
