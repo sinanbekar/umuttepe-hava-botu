@@ -28,7 +28,7 @@ The tweet contains a weather summary from [umuttepe-hava.vercel.app/api/weather]
 
 ## Installation
 
-umuttepe-hava-botu requires [Python](https://www.python.org) 3.8+ with dependencies to run. Also needed a Twitter Developer account.
+umuttepe-hava-botu requires [Python](https://www.python.org) 3.8+ with dependencies to run. It needs a Twitter Developer account and a Redis service.
 
 Clone git repo
 
@@ -37,7 +37,7 @@ git clone https://github.com/sinanbekar/umuttepe-hava-botu
 cd umuttepe-hava-botu
 ```
 
-Rename .env.example to .env and edit Twitter Developer API keys.
+Rename .env.example to .env, edit Twitter Developer API keys and Redis environment variables.
 
 Install the dependencies
 
