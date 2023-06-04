@@ -1,33 +1,60 @@
 from __future__ import annotations
 import logging
 import os
+import redis # type: ignore
 from typing import Any
 import tweepy  # type: ignore
-import time
-from datetime import timezone
+import datetime
 from .util import get_env_var
 from .live_stream import get_frames
 from .weather_data import get_weather_data
 
+published_tweets_key = "published_tweets"
 
 class TwitterActions:
     WEATHER_STARTING_PHRASE = "Umuttepe'de hava şu an"
 
-    def __init__(self, api: tweepy.API) -> None:
+    def __init__(self, api: tweepy.API, client: tweepy.Client, r: redis.StrictRedis) -> None:
         self.api = api
+        self.client = client
+        self.r = r
 
     @classmethod
     def connect(cls) -> TwitterActions:
-        auth = tweepy.OAuth1UserHandler(
-            get_env_var("TWITTER_CONSUMER_KEY"),
-            get_env_var("TWITTER_CONSUMER_SECRET"),
-            get_env_var("TWITTER_ACCESS_TOKEN"),
-            get_env_var("TWITTER_ACCESS_TOKEN_SECRET"),
+        consumer_key = get_env_var("TWITTER_CONSUMER_KEY")
+        consumer_secret = get_env_var("TWITTER_CONSUMER_SECRET")
+        access_token = get_env_var("TWITTER_ACCESS_TOKEN")
+        access_token_secret = get_env_var("TWITTER_ACCESS_TOKEN_SECRET")
+
+        # v2
+        client = tweepy.Client(
+            consumer_key=consumer_key,
+            consumer_secret=consumer_secret,
+            access_token=access_token,
+            access_token_secret=access_token_secret,
         )
 
-        twitter = cls(tweepy.API(auth))
+        # v1.1
+        # We need this authentication also because to add media it only works with api v1.1
+        auth = tweepy.OAuth1UserHandler(
+            consumer_key=consumer_key,
+            consumer_secret=consumer_secret,
+            access_token=access_token,
+            access_token_secret=access_token_secret,
+        )
+        api = tweepy.API(auth)
 
-        return twitter
+        r = redis.StrictRedis(
+            host=get_env_var("REDIS_HOST"),
+            port=get_env_var("REDIS_PORT"),
+            password=get_env_var("REDIS_PASSWORD"),
+            charset="utf-8",
+            decode_responses=True,
+        )
+
+        bot = cls(api, client, r)
+
+        return bot
 
     def publish_tweet(self, text: str, frames: list[Any] = []) -> None:
         media_ids = []
@@ -43,41 +70,33 @@ class TwitterActions:
                 f"An error occurred while uploading media to the Twitter."
             )
 
-        self.api.update_status(status=text, media_ids=media_ids)
-
-    def is_tweet_expired(self, tweet: tweepy.Status, sec: int) -> bool:
-        # just in case running multiple times accidentally
-        return bool(
-            time.time() - tweet.created_at.replace(tzinfo=timezone.utc).timestamp()
-            > sec
-        )
+        ct = datetime.datetime.now()
+        ts = int(ct.timestamp())
+        tweet = self.client.create_tweet(text=text, media_ids=media_ids)
+        tweet_id = tweet.data["id"]
+        self.r.zadd(published_tweets_key, {tweet_id: ts})
 
     def publish_weather_tweet(self) -> None:
-        publish_tweet = True
-        tweets = self.api.user_timeline(count=5)
+        weather_data = get_weather_data()
 
-        for tweet in tweets:
-            if (
-                self.WEATHER_STARTING_PHRASE in tweet.text
-                and not self.is_tweet_expired(tweet, 60 * 20)
-            ):  # 20 mins
-                publish_tweet = False
+        frames = []
+        try:
+            frames = get_frames()
+        except:
+            logging.warning("Live camera feed offline, tweeting without frames.")
 
-        if publish_tweet:
-            weather_data = get_weather_data()
-
-            frames = []
-            try:
-                frames = get_frames()
-            except:
-                logging.warning("Live camera feed offline, tweeting without frames.")
-
-            self.publish_tweet(weather_data, frames)
+        self.publish_tweet(weather_data, frames)
 
     def delete_expired_tweets(self) -> None:
-        tweets = self.api.user_timeline(count=100)
-        for tweet in tweets:
-            if self.WEATHER_STARTING_PHRASE in tweet.text and self.is_tweet_expired(
-                tweet, 24 * 3600  # 24 hours
-            ):
-                self.api.destroy_status(tweet.id)
+        ct = datetime.datetime.now()
+        ts = int(ct.timestamp())
+        before_24h = ts - 24 * 3600
+        
+        tweet_ids = self.r.zrangebyscore(published_tweets_key, min=before_24h, max=ts)
+        for tweet_id in tweet_ids:
+            try:
+                self.client.delete_tweet(tweet_id)
+            except:
+                pass
+
+        self.r.zrem(published_tweets_key, *tweet_ids)
