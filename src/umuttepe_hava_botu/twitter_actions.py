@@ -1,7 +1,7 @@
 from __future__ import annotations
 import logging
 import os
-import redis # type: ignore
+import redis  # type: ignore
 from typing import Any
 import tweepy  # type: ignore
 import datetime
@@ -11,10 +11,13 @@ from .weather_data import get_weather_data
 
 published_tweets_key = "published_tweets"
 
+
 class TwitterActions:
     WEATHER_STARTING_PHRASE = "Umuttepe'de hava şu an"
 
-    def __init__(self, api: tweepy.API, client: tweepy.Client, r: redis.StrictRedis) -> None:
+    def __init__(
+        self, api: tweepy.API, client: tweepy.Client, r: redis.StrictRedis
+    ) -> None:
         self.api = api
         self.client = client
         self.r = r
@@ -72,7 +75,7 @@ class TwitterActions:
 
         ct = datetime.datetime.now()
         ts = int(ct.timestamp())
-        tweet = self.client.create_tweet(text=text, media_ids=media_ids)
+        tweet = self.client.create_tweet(text=text, media_ids=(media_ids or None))
         tweet_id = tweet.data["id"]
         self.r.zadd(published_tweets_key, {tweet_id: ts})
 
@@ -91,7 +94,7 @@ class TwitterActions:
         ct = datetime.datetime.now()
         ts = int(ct.timestamp())
         before_24h = ts - 24 * 3600
-        
+
         tweet_ids = self.r.zrangebyscore(published_tweets_key, min=before_24h, max=ts)
         for tweet_id in tweet_ids:
             try:
